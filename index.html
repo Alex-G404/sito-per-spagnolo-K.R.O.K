@@ -3,12 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>K.R.O.K.-02 | Faz-Tech Domestic & Security Animatronic</title>
+  <title>K.R.O.K.| A.G./Tech Domestic & Security Animatronic</title>
   <!-- Alligator Favicon for URL Search Bar -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐊</text></svg>">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="day-mode">
+
+  <!-- =========================================================
+       SCHERMATA DI BOOT (LOADING) & TERMINALE DI SICUREZZA FAZ-TECH
+       ========================================================= -->
+  <div id="bootScreen" class="boot-screen">
+    <!-- FASE 1: CARICAMENTO INIZIALE -->
+    <div id="bootLoader" class="boot-loader-box">
+      <div class="boot-logo">A.G./TECH</div>
+      <div class="boot-sub">SISTEMA OPERATIVO K.R.O.K. // KERNEL v2.06</div>
+      
+      <div class="boot-bar-container">
+        <div id="bootBar" class="boot-bar-fill"></div>
+      </div>
+      
+      <div id="bootLog" class="boot-log-text">Inizializzazione firmware animatronico...</div>
+    </div>
+
+    <!-- FASE 2: TERMINALE LOGIN & SIMULAZIONE PASSKEY -->
+    <div id="securityTerminal" class="security-terminal-box" style="display: none;">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">A.G./TECH // AUTENTICAZIONE IMPIEGATO</span>
+      </div>
+
+      <div class="terminal-body">
+        <div class="terminal-avatar">🐊</div>
+        <h3>TERMINALE DI SICUREZZA FAZ-TECH</h3>
+        <p class="terminal-instruction">Inserisci le credenziali di servizio o effettua la scansione Passkey.</p>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="input-group">
+            <label for="empId">ID Impiegato / Nome utente:</label>
+            <input type="text" id="empId" placeholder="es. FAZ-GUARD-01 o KROK" autocomplete="off" required />
+          </div>
+
+          <div class="input-group">
+            <label for="empPin">Codice di Sicurezza (PIN):</label>
+            <input type="password" id="empPin" placeholder="es. 1987" autocomplete="off" />
+          </div>
+
+          <div id="loginFeedback" class="login-feedback"></div>
+
+          <div class="terminal-actions">
+            <button type="submit" class="term-btn btn-auth">
+              🔑 Accedi con PIN
+            </button>
+
+            <!-- SIMULAZIONE PASSKEY BIOMETRICA -->
+            <button type="button" class="term-btn btn-passkey" onclick="simulatePasskey()">
+              <span id="passkeyIcon">👆</span> <span id="passkeyText">Scansione Passkey / Impronta</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- PULSANTE PER IL DOCENTE / BYPASS RAPIDO -->
+        <div class="bypass-wrapper">
+          <button type="button" class="btn-bypass" onclick="bypassLogin()">
+            🔓 Accesso Rapido Docente / Ospite
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODALITÀ SLEEP / STANDBY DEL SISTEMA
+       ========================================================= -->
+  <div id="sleepOverlay" class="sleep-overlay" style="display: none;" onclick="wakeFromSleep()">
+    <div class="sleep-scanlines"></div>
+    <div class="sleep-content" onclick="event.stopPropagation()">
+      <div class="sleep-indicator">
+        <div class="sleep-pulse"></div>
+        <span class="sleep-icon">💤</span>
+      </div>
+      <h2 class="sleep-title" data-i18n="sleep_title">SISTEMA EN SUSPENSIÓN (STANDBY)</h2>
+      <p class="sleep-sub" data-i18n="sleep_sub">A.G./TECH K.R.O.K.-02 en modo de ahorro energético. Circuitos hidráulicos en reposo.</p>
+      
+      <div class="sleep-battery-status">
+        <span data-i18n="sleep_battery_label">BATERÍA DE RESERVA:</span> <span id="sleepBatteryPercent">85%</span> ⚡
+      </div>
+
+      <button type="button" class="wake-btn" onclick="wakeFromSleep()">
+        ⚡ <span data-i18n="btn_wake_up">Reactivar Sistema</span>
+      </button>
+
+      <span class="sleep-hint" data-i18n="sleep_hint">Haz clic en cualquier parte o pulsa una tecla para despertar la unidad</span>
+    </div>
+  </div>
 
   <!-- FNAF 12:00 AM SECURITY CAMERA OVERLAY (Visible in Night Mode) -->
   <div class="fnaf-hud" id="fnafHud">
@@ -27,7 +117,7 @@
   <!-- NAVIGATION BAR -->
   <header class="navbar">
     <div class="logo">
-      <span class="logo-icon">🐊</span> FAZ-TECH <strong>K.R.O.K.-02</strong>
+      <span class="logo-icon">🐊</span> A.G./TECH <strong>K.R.O.K.</strong>
     </div>
 
     <nav class="nav-links">
@@ -49,6 +139,11 @@
       <!-- Day / Night Mode Toggle -->
       <button class="mode-toggle" id="modeToggleBtn" onclick="toggleNightMode()">
         🌙 <span data-i18n="btn_night_mode">Modo Guardia (12 AM)</span>
+      </button>
+
+      <!-- Sleep Mode Toggle Button -->
+      <button class="sleep-toggle" id="sleepToggleBtn" onclick="enterSleepMode()" title="Standby">
+        💤 <span data-i18n="btn_sleep_mode">Suspender</span>
       </button>
     </div>
   </header>

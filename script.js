@@ -5,6 +5,7 @@ let currentLang = 'es';
 let isNightMode = false;
 let batteryLevel = 85;
 let isDeployed = false;
+let isSleeping = false;
 
 // =========================================================
 // 2. IDIOMS / MODI DI DIRE DICTIONARY (DAY VS. NIGHT)
@@ -71,6 +72,12 @@ const translations = {
     nav_conc: "5. Conclusión",
     btn_night_mode: "Modo Guardia (12 AM)",
     btn_day_mode: "Modo Hogar (Día)",
+    btn_sleep_mode: "Suspender",
+    sleep_title: "SISTEMA EN SUSPENSIÓN (STANDBY)",
+    sleep_sub: "A.G./TECH K.R.O.K.-02 en modo de ahorro energético. Circuitos hidráulicos en reposo.",
+    sleep_battery_label: "BATERÍA DE RESERVA:",
+    btn_wake_up: "Reactivar Sistema",
+    sleep_hint: "Haz clic en cualquier parte o pulsa una tecla para despertar la unidad",
     badge_type1: "🏠 Robot Doméstico y de Seguridad",
     badge_type2: "🐊 Humanoide Animatrónico",
     badge_type3: "⚙️ Serie Réplica de Fábrica",
@@ -159,6 +166,12 @@ const translations = {
     nav_conc: "5. Conclusione",
     btn_night_mode: "Modalità Guardia (12 AM)",
     btn_day_mode: "Modalità Casa (Giorno)",
+    btn_sleep_mode: "Sospensione",
+    sleep_title: "SISTEMA IN SOSPENSIONE (STANDBY)",
+    sleep_sub: "A.G./TECH K.R.O.K.-02 in modalità a basso consumo energetico. Circuiti idraulici in riposo.",
+    sleep_battery_label: "BATTERIA DI RISERVA:",
+    btn_wake_up: "Riattiva Sistema",
+    sleep_hint: "Fai clic ovunque o premi un tasto per riattivare l'unità",
     badge_type1: "🏠 Robot Domestico e di Sicurezza",
     badge_type2: "🐊 Umanoide Animatronico",
     badge_type3: "⚙️ Serie Replica di Fabbrica",
@@ -247,6 +260,12 @@ const translations = {
     nav_conc: "5. Conclusion",
     btn_night_mode: "Guard Mode (12 AM)",
     btn_day_mode: "Home Mode (Day)",
+    btn_sleep_mode: "Sleep Mode",
+    sleep_title: "SYSTEM IN SLEEP MODE (STANDBY)",
+    sleep_sub: "A.G./TECH K.R.O.K.-02 running on low power mode. Hydraulic circuits on standby.",
+    sleep_battery_label: "BACKUP BATTERY:",
+    btn_wake_up: "Wake Up System",
+    sleep_hint: "Click anywhere or press any key to wake the unit",
     badge_type1: "🏠 Domestic & Security Robot",
     badge_type2: "🐊 Animatronic Humanoid",
     badge_type3: "⚙️ Factory Replica Series",
@@ -427,5 +446,141 @@ function updateBatteryUI() {
   document.getElementById('batteryPercent').textContent = `${batteryLevel}%`;
   document.getElementById('batteryBarFill').style.width = `${batteryLevel}%`;
   document.getElementById('hudBattery').textContent = `${batteryLevel}%`;
+  const sleepBat = document.getElementById('sleepBatteryPercent');
+  if (sleepBat) sleepBat.textContent = `${batteryLevel}%`;
   updateDynamicLabels();
+}
+
+// =========================================================
+// 5. CARICAMENTO SISTEMA & TERMINALE DI LOGIN
+// =========================================================
+
+const bootLogs = [
+  "Inizializzazione firmware animatronico...",
+  "Calibrazione servomotori e mandibola...",
+  "Sincronizzazione fotocamere termiche (CAM 01A)...",
+  "Collegamento alla rastrelliera Titanfall Pod...",
+  "Protocollo di sicurezza attivo. Autenticazione richiesta."
+];
+
+// Esegui la sequenza di caricamento al caricamento della pagina
+window.addEventListener('DOMContentLoaded', () => {
+  const isAlreadyAuthenticated = sessionStorage.getItem('krok_authenticated');
+  
+  if (isAlreadyAuthenticated === 'true') {
+    const boot = document.getElementById('bootScreen');
+    if (boot) boot.style.display = 'none';
+  } else {
+    startBootSequence();
+  }
+
+  // Risveglio premendo un tasto qualsiasi della tastiera quando in Sleep Mode
+  window.addEventListener('keydown', () => {
+    if (isSleeping) {
+      wakeFromSleep();
+    }
+  });
+});
+
+function startBootSequence() {
+  const bootBar = document.getElementById('bootBar');
+  const bootLog = document.getElementById('bootLog');
+  const bootLoader = document.getElementById('bootLoader');
+  const securityTerminal = document.getElementById('securityTerminal');
+
+  let progress = 0;
+  let logIndex = 0;
+
+  const interval = setInterval(() => {
+    progress += 20;
+    bootBar.style.width = `${progress}%`;
+
+    if (logIndex < bootLogs.length) {
+      bootLog.textContent = bootLogs[logIndex];
+      logIndex++;
+    }
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        bootLoader.style.display = 'none';
+        securityTerminal.style.display = 'block';
+      }, 400);
+    }
+  }, 350); // ~1.7 secondi in totale
+}
+
+// Gestione form di login con credenziali
+function handleLoginSubmit(event) {
+  event.preventDefault();
+  const empId = document.getElementById('empId').value.trim();
+  const empPin = document.getElementById('empPin').value.trim();
+  const feedback = document.getElementById('loginFeedback');
+
+  if (empPin === '1987' || empPin === '1234' || empPin === '' || empId.toLowerCase() === 'krok') {
+    unlockSystem(`Accesso accordato! Benvenuto, agente ${empId || 'K.R.O.K.'}`);
+  } else {
+    feedback.className = 'login-feedback error';
+    feedback.textContent = '❌ CODICE ERRATO // Suggerimento: 1987';
+  }
+}
+
+// Simulazione Scansione Passkey / Biometrica
+function simulatePasskey() {
+  const passkeyText = document.getElementById('passkeyText');
+  const passkeyIcon = document.getElementById('passkeyIcon');
+  const feedback = document.getElementById('loginFeedback');
+
+  feedback.className = 'login-feedback';
+  feedback.textContent = '⏳ Scansione sensore biometrico in corso...';
+  passkeyIcon.textContent = '🔄';
+  passkeyText.textContent = 'Verifica credenziale FIDO2...';
+
+  setTimeout(() => {
+    passkeyIcon.textContent = '✅';
+    passkeyText.textContent = 'Passkey Confermata!';
+    unlockSystem('Riconoscimento biometrico riuscito!');
+  }, 1200);
+}
+
+// Bypass rapido per professore / ospite
+function bypassLogin() {
+  unlockSystem('Accesso ospite concesso.');
+}
+
+// Sblocco e dissolvenza dell'overlay
+function unlockSystem(message) {
+  const feedback = document.getElementById('loginFeedback');
+  feedback.className = 'login-feedback success';
+  feedback.textContent = `✔ ${message}`;
+
+  sessionStorage.setItem('krok_authenticated', 'true');
+
+  setTimeout(() => {
+    const boot = document.getElementById('bootScreen');
+    boot.classList.add('fade-out');
+    setTimeout(() => {
+      boot.style.display = 'none';
+    }, 500);
+  }, 800);
+}
+
+// =========================================================
+// 6. FUNZIONI MODALITÀ SLEEP / STANDBY
+// =========================================================
+
+function enterSleepMode() {
+  isSleeping = true;
+  const overlay = document.getElementById('sleepOverlay');
+  const sleepBattery = document.getElementById('sleepBatteryPercent');
+  if (sleepBattery) sleepBattery.textContent = `${batteryLevel}%`;
+  
+  overlay.style.display = 'flex';
+}
+
+function wakeFromSleep() {
+  if (!isSleeping) return;
+  isSleeping = false;
+  const overlay = document.getElementById('sleepOverlay');
+  overlay.style.display = 'none';
 }

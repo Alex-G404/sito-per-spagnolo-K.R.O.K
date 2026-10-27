@@ -41,6 +41,381 @@ body {
 }
 
 /* =========================================================
+   SCHERMATA DI BOOT (LOADING) & TERMINALE DI SICUREZZA
+   ========================================================= */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #030712;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', monospace;
+  color: #00f5d4;
+  padding: 20px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.boot-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* BOX CARICAMENTO A.G./TECH */
+.boot-loader-box {
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+}
+
+.boot-logo {
+  font-size: 3.5rem;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #10b981;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+  margin-bottom: 8px;
+}
+
+.boot-sub {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+.boot-bar-container {
+  width: 100%;
+  height: 12px;
+  background: #111827;
+  border: 1px solid #10b981;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.boot-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #00f5d4);
+  transition: width 0.2s linear;
+}
+
+.boot-log-text {
+  font-size: 0.85rem;
+  color: #6ee7b7;
+  min-height: 20px;
+}
+
+/* BOX TERMINALE RETRO FAZ-TECH */
+.security-terminal-box {
+  background: #090d16;
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.25);
+  overflow: hidden;
+  animation: terminalAppear 0.4s ease-out forwards;
+}
+
+@keyframes terminalAppear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.terminal-header {
+  background: #111827;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #1f2937;
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot.red { background: #ef4444; }
+.terminal-dot.yellow { background: #f59e0b; }
+.terminal-dot.green { background: #10b981; }
+
+.terminal-title {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  margin-left: 6px;
+}
+
+.terminal-body {
+  padding: 24px;
+  text-align: center;
+}
+
+.terminal-avatar {
+  font-size: 2.8rem;
+  margin-bottom: 6px;
+}
+
+.terminal-body h3 {
+  color: #f8fafc;
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.terminal-instruction {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.78rem;
+  color: #6ee7b7;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-family: 'Courier New', monospace;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.login-feedback {
+  min-height: 22px;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+.login-feedback.error { color: #ef4444; }
+.login-feedback.success { color: #10b981; }
+
+.terminal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.term-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+}
+
+.term-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.btn-auth {
+  background: #10b981;
+  color: #030712;
+}
+
+.btn-passkey {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+}
+
+.bypass-wrapper {
+  margin-top: 18px;
+  border-top: 1px dashed #1f2937;
+  padding-top: 14px;
+}
+
+.btn-bypass {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
+.btn-bypass:hover {
+  color: #94a3b8;
+}
+
+/* =========================================================
+   MODALITÀ SLEEP / STANDBY SISTEMA
+   ========================================================= */
+.sleep-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #090e17 0%, #020408 100%);
+  z-index: 100000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 24px;
+  animation: sleepFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes sleepFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sleep-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.4) 4px
+  );
+}
+
+.sleep-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 520px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+}
+
+.sleep-indicator {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sleep-icon {
+  font-size: 2.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.sleep-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.25);
+  animation: sleepPulseAnim 2.5s infinite ease-in-out;
+}
+
+@keyframes sleepPulseAnim {
+  0% { transform: scale(0.85); opacity: 0.3; }
+  50% { transform: scale(1.35); opacity: 0.8; box-shadow: 0 0 25px rgba(56, 189, 248, 0.5); }
+  100% { transform: scale(0.85); opacity: 0.3; }
+}
+
+.sleep-title {
+  font-family: 'Courier New', monospace;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  color: #38bdf8;
+  margin-bottom: 12px;
+}
+
+.sleep-sub {
+  color: #94a3b8;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 22px;
+}
+
+.sleep-battery-status {
+  display: inline-block;
+  background: #020617;
+  border: 1px solid #334155;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-family: monospace;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  margin-bottom: 25px;
+}
+
+.wake-btn {
+  background: linear-gradient(135deg, #10b981, #00f5d4);
+  color: #030712;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+  margin: 0 auto 16px;
+}
+
+.wake-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 28px rgba(16, 185, 129, 0.6);
+}
+
+.sleep-hint {
+  display: block;
+  font-size: 0.78rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.sleep-toggle {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.sleep-toggle:hover {
+  background: #0284c7;
+  color: #fff;
+  transform: scale(1.04);
+}
+
+/* =========================================================
    FNAF 12:00 AM SECURITY CAMERA OVERLAY
    ========================================================= */
 .fnaf-hud {
